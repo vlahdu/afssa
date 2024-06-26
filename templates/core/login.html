@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<div class="md:w-1/2 my-4 p-8 mx-auto bg-gray-100 dark:bg-gray-800 dark:text-white rounded-xl">
+    <h1 class="mt-2 mb-2 text-4xl text-center font-bold text-orange-400">Login</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="mb-4">
+            <label for="" class="inline-block px-3 mb-3 font-semibold text-xl text-teal-300">Username</label><br>
+            {{ form.username }}
+        </div> 
+        <div class="mb-8">
+            <label for="" class="inline-block px-3 mb-3 font-semibold text-xl text-teal-300">Password</label><br>
+            {{ form.password }}
+        </div>
+
+        {% if form.errors or form.non_field_errors %}
+            <div class="mb-3 p-6 dark:bg-red-500 bg-red-100 rounded-xl">
+                {% for field in form %}
+                    {{ field.errors }}
+                {% endfor %}
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        <button class="py-3 px-8 w-full text-xl bg-teal-500 hover:bg-teal-600 rounded-xl text-white font-bold">Submit</button>
+    </form>
+</div>
+{% endblock %}

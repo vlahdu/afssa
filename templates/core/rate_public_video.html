@@ -1,0 +1,114 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Rate Public Video{% endblock title %}
+
+{% block content %}
+<div class="rate-video-container my-6 p-10 mx-auto bg-teal-100 dark:bg-teal-800 dark:text-white rounded-xl">
+    <h1 class="mb-6 text-3xl text-center text-orange-400 font-bold">Rate Video</h1>
+
+    <div class="flex items-center justify-center flex-col">
+        <div class="video-section w-full mb-10">
+            <video controls class="w-full rounded-md bg-black border-2 border-orange-400" style="height: 250px;">
+                <source src="{{ video.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <form method="post" action="{% url 'core:rate_public_video' video.id %}">
+            {% csrf_token %}
+            <style>
+                .rate-video-container {
+                    width: 80%;  
+                }
+                .rating-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .rating-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    width: 90%;  
+                    justify-content: space-between; 
+                }
+                .rating-item label {
+                    color: whitesmoke;
+                    font-size: 1.25rem;
+                    width: 50%;  
+                    margin-right: 70px;
+                    text-align: left;
+                    flex-shrink: 0; 
+                    white-space: nowrap;
+                    font-weight: 700; 
+                }
+                .rating-item input {
+                    padding: 4px;
+                    margin-left: 20px; 
+                    width: 65px;  
+                    text-align: left;
+                    font-weight: 700;
+                }
+                .error-container {
+                    margin-top: 20px;
+                    padding: 10px;
+                    background-color: #f87171;  
+                    color: white;
+                    border-radius: 10px;
+                }
+                @media (min-width: 768px) {
+                    .rate-video-container {
+                        width: 40%;
+                    }
+                }
+                @media (max-width: 767px) {
+                    .rate-video-container {
+                        width: 100%;
+                    }
+                    .rating-item {
+                        flex-direction: column; 
+                        align-items: flex-start;
+                    }
+                    .rating-item label {
+                        width: auto; 
+                    }
+                    .rating-item input {
+                        width: 100%; 
+                    }
+                }
+            </style>
+            <div class="rating-container">
+                <div class="rating-item">
+                    <label for="id_facial_inconsistencies">Facial Inconsistencies</label>
+                    {{ form.facial_inconsistencies }}
+                </div>
+                <div class="rating-item">
+                    <label for="id_glitches_or_artifacts">Glitches or Artifacts</label>
+                    {{ form.glitches_or_artifacts }}
+                </div>
+                <div class="rating-item">
+                    <label for="id_background_quality">Background Quality</label>
+                    {{ form.background_quality }}
+                </div>
+                <div class="rating-item">
+                    <label for="id_lip_sync_accuracy">Lip Sync Accuracy</label>
+                    {{ form.lip_sync_accuracy }}
+                </div>
+            </div>
+    
+            {% if form.errors or form.non_field_errors %}
+                <div class="error-container">
+                    {% for field in form %}
+                        {{ field.errors }}
+                    {% endfor %}
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <div class="flex justify-center mt-4">
+                <button type="submit" class="py-3 px-8 w-full text-lg bg-teal-500 hover:bg-teal-600 rounded-xl text-white font-bold">Submit Rating</button>
+            </div>
+        </form>
+    </div>    
+</div>
+
+{% endblock %}

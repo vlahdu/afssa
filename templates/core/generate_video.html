@@ -1,0 +1,161 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Generate Video{% endblock title %}
+
+{% block content %}
+<div class="generate-video-container my-6 p-10 mx-auto bg-teal-100 dark:bg-teal-800 dark:text-white rounded-xl">
+    <h1 class="mb-10 text-4xl text-center text-orange-400 font-bold">Generate Video</h1>
+
+    <div class="flex items-center justify-center">
+        <form method="post" action="{% url 'core:generate_video' %}" enctype="multipart/form-data" id="generate-form">
+            {% csrf_token %}
+            <style>
+                .generate-video-container {
+                    width: 80%;
+                }
+
+                .form-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+                }
+
+                .form-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    width: 100%;
+                    justify-content: space-between;
+                }
+
+                .form-item label {
+                    color: whitesmoke;
+                    font-size: 1.25rem;
+                    width: 50%;
+                    text-align: left;
+                    white-space: nowrap;
+                    font-weight: 700;
+                }
+
+                .form-item input, .form-item select {
+                    padding: 4px;
+                    width: 50%;
+                    font-weight: 500;
+                }
+
+                #category {
+                    text-align: left;
+                }
+
+                .error-container {
+                    margin-top: 20px;
+                    padding: 10px;
+                    background-color: #f87171;
+                    color: white;
+                    border-radius: 10px;
+                }
+
+                @media (min-width: 768px) {
+                    .generate-video-container {
+                        width: 40%;
+                    }
+                }
+
+                @media (max-width: 767px) {
+                    .generate-video-container {
+                        width: 100%;
+                    }
+                    .form-item {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+                    .form-item label {
+                        width: 100%;
+                    }
+                    .form-item input, .form-item select {
+                        width: 100%;
+                    }
+                }
+
+                .hidden {
+                    visibility: hidden;
+                    height: 0;
+                    margin-bottom: 0;
+                }
+
+                .visible {
+                    visibility: visible;
+                    height: auto;
+                }
+            </style>
+            <div class="form-container">
+                <div class="form-item" id="category">
+                    <label for="id_category">Category</label>
+                    {{ form.category }}
+                </div>
+                <div class="form-item visible" id="audio-upload">
+                    <label for="id_audio">Audio</label>
+                    {{ form.audio }}
+                </div>
+                <div class="form-item visible" id="video-upload">
+                    <label for="id_video">Video or Image</label>
+                    {{ form.video }}
+                </div>
+                <div class="form-item hidden" id="image-upload">
+                    <label for="id_image">Image</label>
+                    {{ form.image }}
+                </div>
+
+                {% if form.errors or form.non_field_errors %}
+                    <div class="error-container">
+                        {% for field in form %}
+                            {{ field.errors }}
+                        {% endfor %}
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+                <div class="flex justify-center mt-4 w-full">
+                    <button type="submit" id="generate-button" class="py-3 px-8 w-full text-lg bg-teal-500 hover:bg-teal-600 rounded-xl text-white font-bold">Generate</button>
+                </div>
+                <p id="loading-text" class="text-gray-400 font-bold text-center" style="display:none;">Video is being generated, please wait...</p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Event listener for when the category selection changes
+    document.getElementById('id_category').addEventListener('change', function () {
+        var category = this.value;
+        var audioUpload = document.getElementById('audio-upload');
+        var videoUpload = document.getElementById('video-upload');
+        var imageUpload = document.getElementById('image-upload');
+
+        // Depending on the selected category, show or hide relevant upload fields
+        if (category === 'makeittalk') {
+            audioUpload.classList.add('visible');
+            audioUpload.classList.remove('hidden');
+            videoUpload.classList.add('hidden');
+            videoUpload.classList.remove('visible');
+            imageUpload.classList.add('visible');
+            imageUpload.classList.remove('hidden');
+        } else {
+            audioUpload.classList.add('visible');
+            audioUpload.classList.remove('hidden');
+            videoUpload.classList.add('visible');
+            videoUpload.classList.remove('hidden');
+            imageUpload.classList.add('hidden');
+            imageUpload.classList.remove('visible');
+        }
+    });
+
+    // Event listener for form submission to handle loading indicator
+    document.getElementById('generate-form').addEventListener('submit', function() {
+        // Hide the generate button and display loading text
+        document.getElementById('generate-button').style.display = 'none';
+        document.getElementById('loading-text').style.display = 'block';
+    });
+</script>
+
+{% endblock %}
